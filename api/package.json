@@ -17,6 +17,7 @@
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.0.5",
     "nodemon": "^2.0.12",
-    "stripe": "^8.174.0"
+    "redux-persist": "^6.0.0",
+    "stripe": "^8.222.0"
   }
 }

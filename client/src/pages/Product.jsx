@@ -7,9 +7,9 @@ import Newsletter from "../components/Newsletter";
 import { mobile } from "../responsive";
 import { useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { publicRequest } from "../requestMethods";
+import { publicRequest, userRequest } from "../requestMethods";
 import { addProduct } from "../redux/cartRedux";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 const Container = styled.div``;
 
@@ -24,8 +24,8 @@ const ImgContainer = styled.div`
 `;
 
 const Image = styled.img`
-  width: 100%;
-  height: 90vh;
+  width: 80%;
+  height: 70vh;
   object-fit: cover;
   ${mobile({ height: "40vh" })}
 `;
@@ -72,7 +72,7 @@ const FilterColor = styled.div`
   height: 20px;
   border-radius: 50%;
   background-color: ${(props) => props.color};
-  margin: 0px 5px;
+  margin: 5px;
   cursor: pointer;
 `;
 
@@ -122,6 +122,8 @@ const Button = styled.button`
 
 const Product = () => {
   const location = useLocation();
+  const user = useSelector((state) => state.user);
+  const cart = useSelector((state) => state.cart);
   const id = location.pathname.split("/")[2];
   const [product, setProduct] = useState({});
   const [quantity, setQuantity] = useState(1);
@@ -129,12 +131,38 @@ const Product = () => {
   const [size, setSize] = useState("");
   const dispatch = useDispatch();
 
+  const addCart = async () => {
+    try {
+      const res = await userRequest.post("/carts", {
+        userId: user.currentUser._id,
+        products: [
+          {
+            productId: id,
+            quantity: quantity,
+          },
+        ],
+      });
+    } catch { }
+  };
+  const updateCart = async () => {
+    try {
+      const res = await userRequest.put(`/carts/${user.currentUser._id}`, {
+        userId: user.currentUser._id,
+        products: [...cart.products,
+          {
+            productId: id,
+            quantity: quantity
+          }]
+      });
+    } catch { }
+  };
+
   useEffect(() => {
     const getProduct = async () => {
       try {
         const res = await publicRequest.get("/products/find/" + id);
         setProduct(res.data);
-      } catch {}
+      } catch { }
     };
     getProduct();
   }, [id]);
@@ -151,6 +179,11 @@ const Product = () => {
     dispatch(
       addProduct({ ...product, quantity, color, size })
     );
+    if(cart == null){
+       addCart();
+    } else {
+      updateCart();
+    }
   };
   return (
     <Container>
@@ -168,12 +201,13 @@ const Product = () => {
             <Filter>
               <FilterTitle>Color</FilterTitle>
               {product.color?.map((c) => (
-                <FilterColor color={c} key={c} onClick={() => setColor(c)} />
+                <FilterColor style={{ border: c == color ? '2px solid black' : 'none' }} color={c} key={c} onClick={() => setColor(c)} />
               ))}
             </Filter>
             <Filter>
               <FilterTitle>Size</FilterTitle>
               <FilterSize onChange={(e) => setSize(e.target.value)}>
+                <FilterSizeOption >Choose</FilterSizeOption>
                 {product.size?.map((s) => (
                   <FilterSizeOption key={s}>{s}</FilterSizeOption>
                 ))}
