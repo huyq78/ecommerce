@@ -10,6 +10,7 @@ import { useEffect, useState } from "react";
 import { publicRequest, userRequest } from "../requestMethods";
 import { addProduct } from "../redux/cartRedux";
 import { useDispatch, useSelector } from "react-redux";
+// import { addCart } from "../redux/apiCalls";
 
 const Container = styled.div``;
 
@@ -124,6 +125,7 @@ const Product = () => {
   const location = useLocation();
   const user = useSelector((state) => state.user);
   const cart = useSelector((state) => state.cart);
+  const userId = user.currentUser._id;
   const id = location.pathname.split("/")[2];
   const [product, setProduct] = useState({});
   const [quantity, setQuantity] = useState(1);
@@ -131,31 +133,34 @@ const Product = () => {
   const [size, setSize] = useState("");
   const dispatch = useDispatch();
 
-  const addCart = async () => {
-    try {
-      const res = await userRequest.post("/carts", {
-        userId: user.currentUser._id,
-        products: [
-          {
-            productId: id,
-            quantity: quantity,
-          },
-        ],
-      });
-    } catch { }
-  };
-  const updateCart = async () => {
-    try {
-      const res = await userRequest.put(`/carts/${user.currentUser._id}`, {
-        userId: user.currentUser._id,
-        products: [...cart.products,
-          {
-            productId: id,
-            quantity: quantity
-          }]
-      });
-    } catch { }
-  };
+  // const addCart = async () => {
+  //   try {
+  //     const res = await userRequest.post("/carts", {
+  //       userId: user.currentUser._id,
+  //       products: [
+  //         {
+  //           productId: id,
+  //           quantity: quantity,
+  //         },
+  //       ],
+  //     });
+  //     return res.data;
+  //   } catch(err) {
+  //     console.log(err);
+  //   }
+  // };
+  // const updateCart = async () => {
+  //   try {
+  //     const res = await userRequest.put(`/carts/${user.currentUser._id}`, {
+  //       userId: user.currentUser._id,
+  //       products: [...cart.products,
+  //         {
+  //           productId: id,
+  //           quantity: quantity
+  //         }]
+  //     });
+  //   } catch { }
+  // };
 
   useEffect(() => {
     const getProduct = async () => {
@@ -179,11 +184,6 @@ const Product = () => {
     dispatch(
       addProduct({ ...product, quantity, color, size })
     );
-    if(cart == null){
-       addCart();
-    } else {
-      updateCart();
-    }
   };
   return (
     <Container>

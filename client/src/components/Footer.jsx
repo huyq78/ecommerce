@@ -127,13 +127,13 @@ const Footer = () => {
       <Right>
         <Title>Contact</Title>
         <ContactItem>
-          <Room style={{marginRight:"10px"}}/> Hanoi
+          <Room style={{ marginRight: "10px" }} /> Hanoi
         </ContactItem>
         <ContactItem>
-          <Phone style={{marginRight:"10px"}}/> +84979782002
+          <Phone style={{ marginRight: "10px" }} /> +84979782002
         </ContactItem>
         <ContactItem>
-          <MailOutline style={{marginRight:"10px"}} /> uli@gmail.com
+          <MailOutline style={{ marginRight: "10px" }} /> uli@gmail.com
         </ContactItem>
         <Payment src="https://i.ibb.co/Qfvn4z6/payment.png" />
       </Right>

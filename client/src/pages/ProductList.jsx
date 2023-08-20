@@ -46,14 +46,14 @@ const ProductList = () => {
 
   const handleFilters = (e) => {
     const value = e.target.value;
-    if(value == 'all'){
-      setFilters({});
-    } else {
+    // if(value == 'All'){
+    //   setFilters({...filters});
+    // } else {
       setFilters({
         ...filters,
         [e.target.name]: value,
       });
-    }
+    // }
   };
 
   return (
